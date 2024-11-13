@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sndfile.hh>
 #include <Eigen/Dense>
-#include <sciplot/sciplot.hpp>
+#include <matplot/matplot.h>
 
 int main () {
     // Initiation
@@ -23,23 +23,10 @@ int main () {
     vec.normalize();
 
     // Visualize the signal
-    sciplot::Plot2D plot;
-        // Set the x and y labels
-    plot.xlabel("x");
-    plot.ylabel("y");
+    std::vector<double> frame = matplot::linspace(0, n_frames);
+    std::vector<double> data(vec.data(), vec.data() + n_frames);
+    matplot::plot(frame, data);
 
-    // Set the x and y ranges
-    plot.xrange(0.0, n_frames);
-    plot.yrange(0.0, 1.0);
-    std::cout << vec.norm() << std::endl;
-    plot.drawCurve(sciplot::range(0, n_frames), (sciplot::Vec) *(vec.data()));
-
-    // Create figure to hold plot
-    sciplot::Figure fig = {{plot}};
-    // Create canvas to hold figure
-    sciplot::Canvas canvas = {{fig}};
-
-    // Show the plot in a pop-up window
-    canvas.show();
+    matplot::show();
     return 0;
 }
