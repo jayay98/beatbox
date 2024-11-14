@@ -1,11 +1,13 @@
 #include <iostream>
 #include <sndfile.hh>
 #include <Eigen/Dense>
-#include <matplot/matplot.h>
+#include <matplotlibcpp.h>
+namespace plt = matplotlibcpp;
 
 int main () {
     // Initiation
     const char* file = "sample.wav";
+    const int FRAME_SIZE = 1024;
     std::cout << "Reading file at: " << file << std::endl;
 
     // Reading file with sndfile
@@ -15,18 +17,26 @@ int main () {
 
     // Read signal into buffer
     int n_frames = waveFile.frames();
-    double* buffer = new double[n_frames];
-    waveFile.readf(buffer, n_frames);
+    // double* buffer = new double[n_frames];
+    // waveFile.readf(buffer, n_frames);
 
     // Importing data from sndfile into Matrix
-    Eigen::Map<Eigen::VectorXd> vec(buffer, n_frames);
-    vec.normalize();
+    // Eigen::Map<Eigen::VectorXd> vec(buffer, n_frames);
+    // vec.normalize();
 
-    // Visualize the signal
-    std::vector<double> frame = matplot::linspace(0, n_frames);
-    std::vector<double> data(vec.data(), vec.data() + n_frames);
-    matplot::plot(frame, data);
+    std::vector<double> t, signal;
+    double* buffer = new double[1];
+    for (int i = 0; i <= n_frames; i += 1) {
+        t.push_back(i);
+        waveFile.readf(buffer, 1);
+        signal.push_back(*buffer);
 
-    matplot::show();
+        if (i % 10 == 0) {
+            plt::clf();
+            plt::plot(t, signal);
+            plt::pause(0.001);
+        }
+    }
+
     return 0;
 }
